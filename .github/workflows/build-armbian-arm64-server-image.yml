@@ -201,6 +201,7 @@ on:
           - tn3399
           - tpm312
           - tqc-a01
+          - transpeed-8k618-t
           - tvi3315a
           - vplus
           - wocyber-a3
@@ -269,11 +270,12 @@ on:
       builder_name:
         description: "Set Armbian builder signature."
         required: false
-        default: "ophub"
+        default: "Aihuangshu"
         type: choice
         options:
           - ophub
           - angel
+          - Aihuangshu
 
 env:
   TZ: Etc/UTC
@@ -386,7 +388,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Rebuild Armbian
-        uses: ophub/amlogic-s9xxx-armbian@main
+        uses: Aihuangshu/amlogic-s9xxx-armbian@main
         if: ${{ steps.clean.outputs.status == 'success' && !cancelled() }}
         with:
           build_target: armbian
