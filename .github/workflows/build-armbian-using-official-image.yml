@@ -53,6 +53,7 @@ on:
           - firefly-rk3399
           - fmx1-pro
           - fmx1-pro-b
+          - gea-6319
           - gzpeite-p01
           - h28k
           - h66k
@@ -61,7 +62,9 @@ on:
           - h88k
           - h88k-v3
           - h96-max-m2
+          - hk1-rbox-k8s
           - hs530r
+          - ht2
           - hugsun-x99
           - ipc-r
           - jp-tvbox
