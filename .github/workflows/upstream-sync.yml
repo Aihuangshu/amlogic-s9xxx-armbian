@@ -54,16 +54,30 @@ jobs:
 
           if [ "${merge_status}" -ne 0 ]; then
             unresolved="$(git diff --name-only --diff-filter=U)"
+            dtb_conflict="build-armbian/armbian-files/platform-files/allwinner/bootfs/dtb/allwinner/sun50i-h618-x98h-100mb.dtb"
+
+            # This exact binary DTB was added independently on both sides from
+            # the same base by upstream's own commits. Prefer upstream/main's
+            # copy so the fork follows the canonical board-support file. Do not
+            # auto-resolve any other non-workflow conflict.
+            if printf '%s\n' "${unresolved}" | grep -Fxq "${dtb_conflict}"; then
+              echo "ℹ️ Resolving known X98H DTB add/add conflict in favor of upstream/main:"
+              echo "   ${dtb_conflict}"
+              git checkout --theirs -- "${dtb_conflict}"
+              git add -- "${dtb_conflict}"
+            fi
+
+            unresolved="$(git diff --name-only --diff-filter=U)"
             non_workflow_conflicts="$(printf '%s\n' "${unresolved}" | grep -v '^\.github/workflows/' || true)"
 
             if [ -n "${non_workflow_conflicts}" ]; then
-              echo "❌ Upstream merge has non-workflow conflicts:"
+              echo "❌ Upstream merge has unexpected non-workflow conflicts:"
               printf '%s\n' "${non_workflow_conflicts}"
               git merge --abort || true
               exit 1
             fi
 
-            echo "ℹ️ Only workflow files conflict; local workflow overlay will be kept."
+            echo "ℹ️ Workflow conflicts (if any) will be resolved by restoring the local workflow overlay."
           fi
 
           # Restore the exact pre-sync workflow tree. This avoids requiring the
